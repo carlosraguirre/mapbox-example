@@ -25,6 +25,8 @@ body { margin: 0; padding: 0; }
   }
 </style>
 
+
+
 <script>
 import mapboxgl from 'mapbox-gl'; // or "const mapboxgl = require('mapbox-gl');"
 
@@ -44,45 +46,74 @@ export default {
   methods: {
     launchMapbox: function () {
       mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_API_KEY;
-      var monument = [-77.0353, 38.8895];
-      const map = new mapboxgl.Map({
-        container: 'map', // container ID
-        style: 'mapbox://styles/mapbox/streets-v11', // style URL
-        center: monument, // starting position [lng, lat]
-        zoom: 13 // starting zoom
-      });
-  
-      var popup = new mapboxgl.Popup({ offset: 25 }).setText(
-      'Construction on the Washington Monument began in 1848.'
-      );
-
-      // create DOM element for the marker
-      var el = document.createElement('div');
-      el.id = 'marker';
-
-      // create the marker
-      new mapboxgl.Marker(el)
-        .setLngLat(monument)
-        .setPopup(popup) // sets a popup on this marker
-        .addTo(map);
-
-      // loop through places and make a new marker for each element
-      this.places.forEach(function(place) {
-        console.log(place)
-
-        //create the popup
-        var popup = new mapboxgl.Popup({ offset: 25 }).setText(
-        place.description
-        );
-        new mapboxgl.Marker()
-          .setLngLat([place.lng, place.lat])
-          .setPopup(popup) // sets a popup on this marker
-          .addTo(map);
-
-      var marker1 = new mapboxgl.Marker()
-        .setLngLat([-77.0340, 38.8984])
-        .addTo(map);
+    var mapboxClient = mapboxSdk({ accessToken: mapboxgl.accessToken });
+    mapboxClient.geocoding
+      .forwardGeocode({
+        query: 'Wellington, New Zealand',
+        autocomplete: false,
+        limit: 1
       })
+      .send()
+      .then(function (response) {
+        if (
+          response &&
+          response.body &&
+          response.body.features &&
+          response.body.features.length
+        ) {
+          var feature = response.body.features[0];
+      
+          var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: feature.center,
+            zoom: 10
+          });
+      
+          // Create a marker and add it to the map.
+          new mapboxgl.Marker().setLngLat(feature.center).addTo(map);
+        }
+      });
+
+      // var monument = [-77.0353, 38.8895];
+      // const map = new mapboxgl.Map({
+      //   container: 'map', // container ID
+      //   style: 'mapbox://styles/mapbox/streets-v11', // style URL
+      //   center: monument, // starting position [lng, lat]
+      //   zoom: 13 // starting zoom
+      // });
+  
+      // var popup = new mapboxgl.Popup({ offset: 25 }).setText(
+      // 'Construction on the Washington Monument began in 1848.'
+      // );
+
+      // // create DOM element for the marker
+      // var el = document.createElement('div');
+      // el.id = 'marker';
+
+      // // create the marker
+      // new mapboxgl.Marker(el)
+      //   .setLngLat(monument)
+      //   .setPopup(popup) // sets a popup on this marker
+      //   .addTo(map);
+
+      // // loop through places and make a new marker for each element
+      // this.places.forEach(function(place) {
+      //   console.log(place)
+
+      //   //create the popup
+      //   var popup = new mapboxgl.Popup({ offset: 25 }).setText(
+      //   place.description
+      //   );
+      //   new mapboxgl.Marker()
+      //     .setLngLat([place.lng, place.lat])
+      //     .setPopup(popup) // sets a popup on this marker
+      //     .addTo(map);
+
+      // var marker1 = new mapboxgl.Marker()
+      //   .setLngLat([-77.0340, 38.8984])
+      //   .addTo(map);
+      // })
     },
   }
 }
