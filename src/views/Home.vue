@@ -31,7 +31,11 @@ import mapboxgl from 'mapbox-gl'; // or "const mapboxgl = require('mapbox-gl');"
 export default {
   data: function () {
     return {
-      message: "Welcome to Mapbox"
+      message: "Welcome to Mapbox",
+      places: [
+        { lng: -77.0148, lat: 38.8891 , description: "Museum of planes, rockets, space and fun" },
+        { lng: -77.0232, lat: 38.8920 , description: "Stuffed animals, old and new" }
+      ]
     };
   },
   mounted: function() {
@@ -47,10 +51,7 @@ export default {
         center: monument, // starting position [lng, lat]
         zoom: 13 // starting zoom
       });
-      var marker1 = new mapboxgl.Marker()
-        .setLngLat([-77.03404649241942, 38.89849491380575])
-        .addTo(map);
-
+  
       var popup = new mapboxgl.Popup({ offset: 25 }).setText(
       'Construction on the Washington Monument began in 1848.'
       );
@@ -64,6 +65,24 @@ export default {
         .setLngLat(monument)
         .setPopup(popup) // sets a popup on this marker
         .addTo(map);
+
+      // loop through places and make a new marker for each element
+      this.places.forEach(function(place) {
+        console.log(place)
+
+        //create the popup
+        var popup = new mapboxgl.Popup({ offset: 25 }).setText(
+        place.description
+        );
+        new mapboxgl.Marker()
+          .setLngLat([place.lng, place.lat])
+          .setPopup(popup) // sets a popup on this marker
+          .addTo(map);
+
+      var marker1 = new mapboxgl.Marker()
+        .setLngLat([-77.0340, 38.8984])
+        .addTo(map);
+      })
     },
   }
 }
