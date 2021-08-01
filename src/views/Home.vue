@@ -49,7 +49,7 @@ export default {
     var mapboxClient = mapboxSdk({ accessToken: mapboxgl.accessToken });
     mapboxClient.geocoding
       .forwardGeocode({
-        query: 'Wellington, New Zealand',
+        query: 'Seattle, Washington',
         autocomplete: false,
         limit: 1
       })
